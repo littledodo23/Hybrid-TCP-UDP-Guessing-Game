@@ -1,25 +1,41 @@
-# 🔢 Hybrid TCP/UDP Number Guessing Game
+# Game Specification
 
-A Python-based multiplayer number guessing game using hybrid socket communication. TCP handles player registration and control flow; UDP handles fast real-time number guesses and feedback.
+## 🧩 Overview
+A real-time, round-based multiplayer number guessing game using Python sockets. Hybrid model with:
+- **TCP** for control & setup
+- **UDP** for fast guessing
 
-## 🎯 Overview
+## 🎮 Features
+- 2–4 player support
+- Real-time feedback: "Higher", "Lower", "Correct"
+- Unique username enforcement
+- Range checks & guess validation
+- 10s timeout per guess
 
-- Players connect via TCP, register with a unique username, and send their local UDP port.
-- Once the minimum number of players join, the game starts.
-- Each player guesses a number (1–100) via UDP.
-- The server responds with real-time feedback: **Higher**, **Lower**, or **Correct**.
-- First player to guess correctly wins. If time runs out, the game ends with no winner.
+## 🔁 Protocol Workflow
 
-## 👥 Player Rules
+### TCP Phase (Setup)
+- Clients connect, send username
+- Server checks:
+  - Is username unique?
+  - Have enough players joined?
+- Server sends rules and signals game start
 
-- **Minimum players**: 2  
-- **Maximum players**: 4  
-- **Timeout**: 60 seconds per game round  
-- **Range**: Guesses must be between 1 and 100 (inclusive)
+### UDP Phase (Gameplay)
+- Server generates a number (1–100)
+- Clients send guesses over UDP
+- Server replies:
+  - "Higher", "Lower", or "Correct"
+- Round ends on correct guess or timeout
+- Results sent via TCP
 
-## 🧠 Server Setup
+## 🧠 Architecture
 
-Run the server first:
-```bash
-python server.py
-python client.py
+### Server:
+- Listens on both TCP/UDP
+- Manages all game logic, players, and fairness
+
+### Client:
+- Uses TCP for registration and updates
+- Uses UDP for gameplay
+- Displays server feedback
